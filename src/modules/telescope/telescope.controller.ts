@@ -10,37 +10,36 @@ import {
   HttpStatus,
   Post,
 } from '@nestjs/common';
+import { CreateDto } from './dto/create.dto';
+import { UpdateDto } from './dto/update.dto';
 
 @Controller('telescope')
 export class TelescopeController {
-  constructor() {}
-
   @Post()
-  create(@Body() createDto: CreateTelescopeDto) {
-    return '';
+  create(@Body() createDto: CreateDto) {
+    return createDto;
   }
 
   @Get()
-  getAllTelescopes(@Query() query: ListAllEntities) {
-    return [];
+  getAll(@Query('limit') limit: string, @Query('offset') offset: string) {
+    return `Limit: ${limit}, Offset: ${offset}`;
   }
 
   @Get(':id')
-  getTelescopeById(@Param('id') id: string) {
-    return '';
+  getById(@Param('id') id: string) {
+    return id;
   }
 
   @Put(':id')
-  update(
-    @Param('id') id: string,
-    @Body() updateTelescopeDto: UpdateTelescopeDto,
-  ) {
-    return '';
+  update(@Param('id') id: string, @Body() updateDto: UpdateDto) {
+    console.log(updateDto);
+
+    return id;
   }
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   remove(@Param('id') id: string) {
-    return '';
+    return id;
   }
 }

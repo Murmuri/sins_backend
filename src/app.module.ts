@@ -1,19 +1,21 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { PostModule } from './modules/post/post.module';
-import { PhotoModule } from './modules/photo/photo.module';
-import { AlbomeController } from './modules/albome/albome.controller';
-import { AlbomeModule } from './modules/albome/albome.module';
-import { TelescopeService } from './modules/telescope/telescope.service';
-import { TelescopeModule } from './modules/telescope/telescope.module';
-import { UserModule } from './modules/user/user.module';
-import { CameraModule } from './modules/camera/camera.module';
-import { EquipmentModule } from './modules/equipment/equipment.module';
-import { ObjectService } from './modules/object/object.service';
-import { ObjectController } from './modules/object/object.controller';
-import { ObjectModule } from './modules/object/object.module';
-import { LocationModule } from './modules/location/location.module';
+import { AppController } from 'src/app.controller';
+import { AppService } from 'src/app.service';
+import { PostModule } from 'src/modules/post/post.module';
+import { PhotoModule } from 'src/modules/photo/photo.module';
+import { AlbomeController } from 'src/modules/albome/albome.controller';
+import { AlbomeModule } from 'src/modules/albome/albome.module';
+import { TelescopeService } from 'src/modules/telescope/telescope.service';
+import { TelescopeModule } from 'src/modules/telescope/telescope.module';
+import { UserModule } from 'src/modules/user/user.module';
+import { CameraModule } from 'src/modules/camera/camera.module';
+import { EquipmentModule } from 'src/modules/equipment/equipment.module';
+import { SpaceObjectService } from 'src/modules/space-object/space-object.service';
+import { SpaceObjectController } from 'src/modules/space-object/space-object.controller';
+import { SpaceObjectModule } from 'src/modules/space-object/space-object.module';
+import { LocationModule } from 'src/modules/location/location.module';
+import { AuthModule } from 'src/modules/auth/auth.module';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
   imports: [
@@ -24,10 +26,25 @@ import { LocationModule } from './modules/location/location.module';
     UserModule,
     CameraModule,
     EquipmentModule,
-    ObjectModule,
+    SpaceObjectModule,
     LocationModule,
+    AuthModule,
+    TypeOrmModule.forRoot({
+      type: 'postgres',
+      host: process.env.DB_HOST,
+      port: +process.env.DB_PORT,
+      database: process.env.DB_SCHEMA,
+      username: process.env.DB_USERNAME,
+      password: process.env.DB_PASSWORD,
+      logging: process.env.NODE_ENV === 'development',
+      migrationsTableName: 'migrations',
+      migrations: [__dirname + '/migration/**/*.{js,ts}'],
+      entities: [__dirname + '/entity/*.{js,ts}'],
+      migrationsRun: true,
+      synchronize: true,
+    }),
   ],
-  controllers: [AppController, AlbomeController, ObjectController],
-  providers: [AppService, TelescopeService, ObjectService],
+  controllers: [AppController],
+  providers: [AppService],
 })
 export class AppModule {}

@@ -10,34 +10,36 @@ import {
   HttpStatus,
   Post,
 } from '@nestjs/common';
+import { CreateDto } from './dto/create.dto';
+import { UpdateDto } from './dto/update.dto';
 
 @Controller('albome')
 export class AlbomeController {
-  constructor() {}
-
   @Post()
-  create(@Body() createDto: CreateAlbomeDto) {
-    return '';
+  create(@Body() createDto: CreateDto) {
+    return createDto;
   }
 
   @Get()
-  getAllAlbomes(@Query() query: ListAllEntities) {
-    return [];
+  getAll(@Query('limit') limit: string, @Query('offset') offset: string) {
+    return `Limit: ${limit}, Offset: ${offset}`;
   }
 
   @Get(':id')
-  getAlbomeById(@Param('id') id: string) {
-    return '';
+  getById(@Param('id') id: string) {
+    return id;
   }
 
   @Put(':id')
-  update(@Param('id') id: string, @Body() updateAlbomeDto: UpdateAlbomeDto) {
-    return '';
+  update(@Param('id') id: string, @Body() updateDto: UpdateDto) {
+    console.log(updateDto);
+
+    return id;
   }
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   remove(@Param('id') id: string) {
-    return '';
+    return id;
   }
 }

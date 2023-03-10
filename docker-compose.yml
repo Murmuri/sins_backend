@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+
+  sins-db:
+    container_name: sins_database
+    image: postgres:14.2
+    volumes:
+      - sins_database:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=${DB_SCHEMA}
+      - POSTGRES_USER=${DB_USERNAME}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+    restart: on-failure
+    ports:
+      - 5432:5432
+    networks:
+      - sins
+    env_file:
+      - .env
+
+networks:
+  detf:
+    name: sins
+    driver: bridge
+
+volumes:
+  sins_database:

@@ -10,32 +10,36 @@ import {
   HttpStatus,
   Post,
 } from '@nestjs/common';
+import { CreateDto } from './dto/create.dto';
+import { UpdateDto } from './dto/update.dto';
 
 @Controller('post')
 export class PostController {
   @Post()
-  create(@Body() createDto: CreatePostDto) {
-    return '';
+  create(@Body() createDto: CreateDto) {
+    return createDto;
   }
 
   @Get()
-  getAllPosts(@Query() query: ListAllEntities) {
-    return [];
+  getAll(@Query('limit') limit: string, @Query('offset') offset: string) {
+    return `Limit: ${limit}, Offset: ${offset}`;
   }
 
   @Get(':id')
-  getPostById(@Param('id') id: string) {
-    return '';
+  getById(@Param('id') id: string) {
+    return id;
   }
 
   @Put(':id')
-  update(@Param('id') id: string, @Body() updatePostDto: UpdatePostDto) {
-    return '';
+  update(@Param('id') id: string, @Body() updateDto: UpdateDto) {
+    console.log(updateDto);
+
+    return id;
   }
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   remove(@Param('id') id: string) {
-    return '';
+    return id;
   }
 }
