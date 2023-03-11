@@ -3,11 +3,20 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { IsEmail } from 'class-validator';
+import { Albome } from './Albome';
+import { Equipment } from './Equipment';
+import { Camera } from './Camera';
+import { Location } from './Location';
+import { Telescope } from './Telescope';
+import { Post } from './Post';
+import { Photo } from './Photo';
 
 @Entity({ name: 'users' })
 export class User {
@@ -61,6 +70,27 @@ export class User {
 
   @Column({ nullable: true })
   salt: string;
+
+  @OneToMany(() => Equipment, (equipment) => equipment.user)
+  equipments: Equipment[];
+
+  @ManyToOne(() => Location, (location) => location.users)
+  location: Location;
+
+  @OneToMany(() => Albome, (albome) => albome.user)
+  albomes: Albome[];
+
+  @OneToMany(() => Camera, (camera) => camera.user)
+  camers: Camera[];
+
+  @OneToMany(() => Telescope, (telescope) => telescope.user)
+  telescopes: Telescope[];
+
+  @OneToMany(() => Post, (post) => post.user)
+  posts: Post[];
+
+  @OneToMany(() => Photo, (photo) => photo.user)
+  photos: Photo[];
 
   async validatePassword(password: string): Promise<boolean> {
     const hash = await bcrypt.hash(password, this.salt);

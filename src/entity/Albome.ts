@@ -2,9 +2,13 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  ManyToMany,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { Photo } from './Photo';
+import { User } from './User';
 
 @Entity({ name: 'albomes' })
 export class Albome {
@@ -23,4 +27,19 @@ export class Albome {
 
   @Column({ nullable: true })
   delete_at: Date;
+
+  @Column()
+  name: string;
+
+  @Column({ nullable: true })
+  discription: string;
+
+  @Column({ nullable: true })
+  tag: string;
+
+  @ManyToOne(() => User, (user) => user.albomes)
+  user: User;
+
+  @ManyToMany(() => Photo, (photo) => photo.albomes)
+  photos: Photo[];
 }

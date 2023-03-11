@@ -1,28 +1,45 @@
 version: '3.8'
 
 services:
-
-  sins-db:
+  detf-db:
     container_name: sins_database
     image: postgres:14.2
     volumes:
-      - sins_database:/var/lib/postgresql/data
+      - ./sins_database:/var/lib/postgresql/data
     environment:
       - POSTGRES_DB=${DB_SCHEMA}
       - POSTGRES_USER=${DB_USERNAME}
       - POSTGRES_PASSWORD=${DB_PASSWORD}
-    restart: on-failure
-    ports:
-      - 5432:5432
+    restart: unless-stopped
     networks:
       - sins
     env_file:
       - .env
 
+  sins-back-end:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./sins_back_end:${FILE_PATH}
+    depends_on:
+      - sins-db
+    ports:
+      - "127.0.0.1:${DOCKER_EXPOSE_PORT:-3000}:${PORT:-3000}"
+    restart: unless-stopped
+    command: "npm start"
+    networks:
+      - sins
+    environment:
+      - DB_HOST=sins-db 
+    env_file:
+      - .env
+
 networks:
-  detf:
+  sins:
     name: sins
     driver: bridge
 
 volumes:
   sins_database:
+  sins_back_end:
