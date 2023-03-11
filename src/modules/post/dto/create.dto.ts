@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { Type } from 'class-transformer';
 
 export class CreateDto {
@@ -7,5 +7,35 @@ export class CreateDto {
   @IsNotEmpty()
   @IsString()
   @Type(() => String)
-  name: string;
+  title: string;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsString()
+  @Type(() => String)
+  discription: string;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsString()
+  @Type(() => Date)
+  start_at: Date;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsString()
+  @Type(() => Date)
+  end_at: Date;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsString()
+  @Type(() => String)
+  weather: string;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsString()
+  @Type(() => String)
+  plane: string;
 }
