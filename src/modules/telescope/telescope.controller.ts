@@ -9,37 +9,58 @@ import {
   HttpCode,
   HttpStatus,
   Post,
+  UseGuards,
 } from '@nestjs/common';
 import { CreateDto } from './dto/create.dto';
 import { UpdateDto } from './dto/update.dto';
+import { Telescope } from 'src/entity/Telescope';
+import { JwtAuthGuard } from 'src/modules/auth/guards/jwt-auth.guard';
+import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { TelescopeService } from './telescope.service';
 
+@ApiBearerAuth()
+@ApiTags('telescope')
 @Controller('telescope')
 export class TelescopeController {
+  constructor(private readonly telescopeService: TelescopeService) {}
+
   @Post()
-  create(@Body() createDto: CreateDto) {
-    return createDto;
+  @UseGuards(JwtAuthGuard)
+  @ApiResponse({ type: Telescope })
+  async create(@Body() createDto: CreateDto): Promise<Telescope> {
+    return await this.telescopeService.create(createDto);
   }
 
   @Get()
-  getAll(@Query('limit') limit: string, @Query('offset') offset: string) {
-    return `Limit: ${limit}, Offset: ${offset}`;
+  @ApiResponse({ type: [Telescope] })
+  async getAll(
+    @Query('limit') limit: string,
+    @Query('offset') offset: string,
+  ): Promise<Telescope[]> {
+    return await this.telescopeService.getAll(limit, offset);
   }
 
   @Get(':id')
-  getById(@Param('id') id: string) {
-    return id;
+  @ApiResponse({ type: Telescope })
+  async getById(@Param('id') id: string): Promise<Telescope> {
+    return await this.telescopeService.getById(id);
   }
 
   @Put(':id')
-  update(@Param('id') id: string, @Body() updateDto: UpdateDto) {
-    console.log(updateDto);
-
-    return id;
+  @UseGuards(JwtAuthGuard)
+  @ApiResponse({ type: Telescope })
+  async update(
+    @Param('id') id: string,
+    @Body() updateDto: UpdateDto,
+  ): Promise<Telescope> {
+    return await this.telescopeService.update(id, updateDto);
   }
 
   @Delete(':id')
+  @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
-  remove(@Param('id') id: string) {
-    return id;
+  @ApiResponse({ type: Telescope })
+  async remove(@Param('id') id: string): Promise<Telescope> {
+    return await this.telescopeService.delete(id);
   }
 }

@@ -8,38 +8,59 @@ import {
   Delete,
   HttpCode,
   HttpStatus,
-  Post,
+  Post as P,
+  UseGuards,
 } from '@nestjs/common';
 import { CreateDto } from './dto/create.dto';
 import { UpdateDto } from './dto/update.dto';
+import { Post } from 'src/entity/Post';
+import { JwtAuthGuard } from 'src/modules/auth/guards/jwt-auth.guard';
+import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { PostService } from './post.service';
 
+@ApiBearerAuth()
+@ApiTags('post')
 @Controller('post')
 export class PostController {
-  @Post()
-  create(@Body() createDto: CreateDto) {
-    return createDto;
+  constructor(private readonly postService: PostService) {}
+
+  @P()
+  @UseGuards(JwtAuthGuard)
+  @ApiResponse({ type: Post })
+  async create(@Body() createDto: CreateDto): Promise<Photo> {
+    return await this.postService.create(createDto);
   }
 
   @Get()
-  getAll(@Query('limit') limit: string, @Query('offset') offset: string) {
-    return `Limit: ${limit}, Offset: ${offset}`;
+  @ApiResponse({ type: [Post] })
+  async getAll(
+    @Query('limit') limit: string,
+    @Query('offset') offset: string,
+  ): Promise<Post[]> {
+    return await this.postService.getAll(limit, offset);
   }
 
   @Get(':id')
-  getById(@Param('id') id: string) {
-    return id;
+  @ApiResponse({ type: Post })
+  async getById(@Param('id') id: string): Promise<Post> {
+    return await this.postService.getById(id);
   }
 
   @Put(':id')
-  update(@Param('id') id: string, @Body() updateDto: UpdateDto) {
-    console.log(updateDto);
-
-    return id;
+  @UseGuards(JwtAuthGuard)
+  @ApiResponse({ type: Post })
+  async update(
+    @Param('id') id: string,
+    @Body() updateDto: UpdateDto,
+  ): Promise<Post> {
+    return await this.postService.update(id, updateDto);
   }
 
   @Delete(':id')
+  @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
-  remove(@Param('id') id: string) {
-    return id;
+  @ApiResponse({ type: Post })
+  async remove(@Param('id') id: string): Promise<Post> {
+    return await this.postService.delete(id);
   }
 }
